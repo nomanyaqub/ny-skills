@@ -4,7 +4,7 @@ name: ny-pipeline
 
 # ny-pipeline
 
-Read `.opencode/context.json`. Steps 1–2 (Plan, Implement) run by spawning fresh subagents via the Task tool — **wait for each subagent to complete before spawning the next**, and pass each the context file path so it can read and update state. Steps 3–5 (Lightweight verify, Code review, Address findings) run **in the main pipeline thread** — no delegation — except the two review axes in step 4, which fan out in parallel.
+Read `.opencode/context.json`. Steps 1–2 (Plan, Implement) run by spawning fresh subagents via the Task tool — **wait for each subagent to complete before spawning the next**, and pass each the context file path so it can read and update state. Steps 3–5 (Lightweight verify, Code review, Address findings) run **in the main pipeline thread** — no delegation — except the two review axes in step 4, which fan out in parallel. Step 6 (Open PR) runs in the main thread. Step 7 (Post-PR external review) runs **in the main thread** and delegates only each round's review itself to the `pr-reviewer` subagent (a read-only agent defined globally in `~/.config/opencode/opencode.jsonc`).
 
 The individual `ny-*` skill files (ny-fetch, ny-plan, ny-verify, ny-audit, ny-coverage, ny-review-docs, ny-document, ny-create-pr) remain as independently callable reference — the pipeline subagents follow them inline rather than spawning sub-subagents.
 
@@ -83,10 +83,30 @@ Read issue number, title, branch name from `.opencode/context.json`. Do the foll
    gh pr create --title "Issue #<number>: <title>" --body "<acceptance criteria from issue body>" --base main
    ```
    Optionally prepend a one-line review summary (e.g. "Code review: N findings addressed.") to the PR body.
-3. Capture the PR number from the output. Store it in `.opencode/context.json` as `prNumber`.
+3. Capture the PR number from the output. Store it in `.opencode/context.json` as `prNumber`, plus the PR URL as `prUrl`.
 
 **Completion**: PR is created and `prNumber` is in context.json.
 
+### 7. Post-PR external review loop
+
+Run **after** step 6 completes (`prNumber` present in `.opencode/context.json`). A second model reviews the open PR; the main thread fixes what it finds. Max **2 rounds**, then stop — this prevents infinite ping-pong between models.
+
+Each round, in the **main pipeline thread**:
+
+1. Spawn a Task subagent with type `pr-reviewer`. Pass it: the PR number and URL from context.json (the agent accepts either), the round number (1-based), and the issue title/body as the spec. The agent reads the repo itself; do not paste the diff into the prompt.
+2. Wait for it to return its JSON verdict. If verdict is `ERROR`, follow error handling below.
+3. If verdict is `APPROVE`: record the round under `externalReview` in `.opencode/context.json` (merge, don't overwrite) and stop — the pipeline is complete.
+4. Otherwise address the returned findings in the **main thread**, mirroring step 5:
+   - `mandatory: true` findings are required fixes.
+   - `mandatory: false` findings are judgement calls — fix unless a documented repo standard endorses the current shape ("the repo overrides").
+   - Do **not** re-run the internal code review from step 4.
+5. Re-run all three checks from step 3 (the project's lint, typecheck, and full test suite). The zero-tolerance gate re-arms: if any check fails, fix and re-run all three from the start.
+6. Commit and push: `git add -A && git commit -m "#<issue>: address external review round <N>" && git push origin "$(git rev-parse --abbrev-ref HEAD)"`.
+7. Record per-finding resolutions and the round outcome under `externalReview` in `.opencode/context.json`.
+8. Proceed to the next round (step 1) until APPROVE or 2 rounds completed. After the final round with verdict still `CHANGES_REQUESTED`, report the remaining findings to the user — they may warrant follow-up issues rather than more auto-fixing.
+
+**Completion**: reviewer posted one comment per round, fixes pushed with green checks, `externalReview` recorded in context.json, loop ended via APPROVE or round limit.
+
 ## Error handling
 
-If any subagent fails (steps 1–2, or either review axis in step 4), retry it once. If it fails again, stop the pipeline and report the error.
+If any subagent fails (steps 1–2, either review axis in step 4, or the `pr-reviewer` agent in step 7), retry it once. If it fails again, stop the pipeline and report the error. In step 7, a retry means re-spawning the same review round; findings already fixed in earlier rounds are not reverted.
