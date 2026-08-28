@@ -1,7 +1,10 @@
 ---
 description: Read-only PR reviewer following opencode /review methodology. Reviews a GitHub PR, posts one findings comment, returns structured JSON.
 mode: subagent
-model: opencode-go/deepseek-v4-pro
+# model: opencode-go/glm-5.3-flash
+# openai
+model: openai/gpt-5.6-terra
+variant: medium
 permission:
   edit: deny
 ---
