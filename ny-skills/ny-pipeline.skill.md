@@ -95,13 +95,29 @@ Read issue number, title, branch name from `.opencode/context.json`. Do the foll
    git push origin "$(git rev-parse --abbrev-ref HEAD)"
    ```
 2. Create the PR:
-   ```bash
-   gh pr create --title "Issue #<number>: <title>" --body "<acceptance criteria from issue body>" --base main
-   ```
-   Optionally prepend a one-line review summary (e.g. "Code review: N findings addressed.") to the PR body.
-3. Capture the PR number from the output. Store it in `.opencode/context.json` as `prNumber`, plus the PR URL as `prUrl`.
+    ```bash
+    cat > "${TMPDIR:-/tmp}/issue-<number>-pr-body.md" <<'EOF'
+    Closes #<number>
 
-**Completion**: PR is created and `prNumber` is in context.json.
+    ## Summary
+
+    <concise description of the implemented outcome>
+
+    ## Acceptance Criteria
+
+    - [x] <each completed acceptance criterion from the issue body>
+
+    ## Verification
+
+    - <each lint, typecheck, and test command run successfully>
+    EOF
+    gh pr create --title "Issue #<number>: <title>" --body-file "${TMPDIR:-/tmp}/issue-<number>-pr-body.md" --base main
+    ```
+    The body is mandatory. Do not create a PR with an empty or acceptance-criteria-only description. A `Closes #<number>` line must be present as a standalone paragraph so GitHub closes the issue when the PR merges. Optionally add a one-line code-review summary after the closing line.
+3. Capture the PR number from the output. Store it in `.opencode/context.json` as `prNumber`, plus the PR URL as `prUrl`.
+4. Validate the created PR before proceeding: `gh pr view <pr-number> --json body,closingIssuesReferences`. Stop and correct the PR body with `gh pr edit <pr-number> --body-file "${TMPDIR:-/tmp}/issue-<number>-pr-body.md"` if the body is empty or `closingIssuesReferences` does not contain issue `#<number>`.
+
+**Completion**: PR has a non-empty structured description, GitHub recognizes its closing reference, and `prNumber` is in context.json.
 
 ### 7. Post-PR external review loop
 
