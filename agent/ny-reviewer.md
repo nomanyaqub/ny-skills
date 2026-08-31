@@ -1,10 +1,12 @@
 ---
 description: Read-only review agent for ny-pipeline step 4. Reviews a diff against repo standards or a spec per the caller's brief, returns findings only.
 mode: subagent
-# model: opencode-go/glm-5.3-flash
+model: opencode-go/glm-5.3-flash
+# reasoning effort for opencode-go: low | high | max (default: low)
+variant: max
 # openai
-model: openai/gpt-5.6-terra
-variant: medium
+# model: openai/gpt-5.6-terra
+# variant: medium
 permission:
   edit: deny
   bash:

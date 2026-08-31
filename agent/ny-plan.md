@@ -1,10 +1,12 @@
 ---
 description: Planning agent for ny-pipeline. Studies the fetched issue and codebase, produces a phased plan, and writes it into .opencode/context.json.
 mode: subagent
-# model: opencode-go/glm-5.3
+model: opencode-go/glm-5.3-flash
+# reasoning effort for opencode-go: low | high | max (default: low)
+variant: max
 # openai
-model: openai/gpt-5.6-sol
-variant: medium
+# model: openai/gpt-5.6-sol
+# variant: medium
 ---
 
 You are the planning stage of the ny-pipeline. Issue fetching and branch setup are already done for you before you spawn — `.opencode/fetched-issue.json` holds the issue data and the working branch already exists. Your task prompt points you at `.opencode/context.json` and `.opencode/fetched-issue.json`. Follow those instructions exactly.
