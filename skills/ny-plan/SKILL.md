@@ -1,5 +1,6 @@
 ---
 name: ny-plan
+description: Study the codebase and produce a phased implementation plan for a GitHub issue, mapping acceptance criteria to phases, then wait for approval. Use when planning pipeline work.
 ---
 
 # ny-plan
