@@ -1,5 +1,6 @@
 ---
 name: ny-verify
+description: Run lint, typecheck, and tests with zero tolerance, fixing issues and re-running until all pass. Use to verify pipeline changes before review.
 ---
 
 # ny-verify

@@ -1,5 +1,6 @@
 ---
 name: ny-fetch
+description: Fetch a GitHub issue, create a kebab-case branch from main, and record the issue context in .opencode/context.json. Use at the start of a pipeline run for an issue.
 ---
 
 # ny-fetch
