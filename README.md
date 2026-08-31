@@ -22,9 +22,14 @@ ny-skills/              → ~/.config/opencode/ny-skills/
                           pipeline subagents.
   conventional-commit.skill.md
                           Commit-message convention used by pipeline commits.
+  issue.skill.md          Open a GitHub issue through the pipeline as a skill
+                          (Codex and OpenCode).
+command/                → ~/.config/opencode/command/
+  issue.md                OpenCode `/issue <number>` slash command: kick off
+                          the pipeline for a GitHub issue.
 ```
 
-Not tracked here: `opencode.jsonc`, `command/`, `plugins/` — machine-local
+Not tracked here: `opencode.jsonc`, `plugins/` — machine-local
 config that may contain secrets. Keep those out of git.
 
 ## Install / sync
