@@ -1,6 +1,6 @@
 ---
 name: ny-pipeline
-description: Run the ny pipeline end-to-end for a GitHub issue: fetch the issue, plan phases, implement, verify, review, open a PR, and post-PR external review. Use when the user asks to work a GitHub issue, run the pipeline, or continue a pipeline already in progress.
+description: "Run the ny pipeline end-to-end for a GitHub issue: fetch the issue, plan phases, implement, verify, review, open a PR, and post-PR external review. Use when the user asks to work a GitHub issue, run the pipeline, or continue a pipeline already in progress."
 ---
 
 # ny-pipeline

@@ -1,6 +1,6 @@
 ---
 name: ny-implement
-description: Implement one phase of the ny-pipeline plan using TDD tracer bullets (one failing test, minimal implementation, commit), then run quality gates: typecheck and tests. Use when executing a pipeline phase.
+description: "Implement one phase of the ny-pipeline plan using TDD tracer bullets (one failing test, minimal implementation, commit), then run quality gates: typecheck and tests. Use when executing a pipeline phase."
 ---
 
 # ny-implement (per-phase)

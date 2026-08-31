@@ -1,6 +1,6 @@
 ---
 name: ny-document
-description: Update project documentation for user-facing changes: docs/, README.md, .env.example, and docs/testing.md, verifying each change against the actual code. Use when documentation must reflect implemented changes.
+description: "Update project documentation for user-facing changes: docs/, README.md, .env.example, and docs/testing.md, verifying each change against the actual code. Use when documentation must reflect implemented changes."
 ---
 
 # ny-document

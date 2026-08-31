@@ -1,6 +1,6 @@
 ---
 name: ny-coverage
-description: Close test-coverage gaps from the audit: add unit tests for missing edge cases and Hurl API tests, or document a skip decision with rationale. Use when coverage is requested after an audit.
+description: "Close test-coverage gaps from the audit: add unit tests for missing edge cases and Hurl API tests, or document a skip decision with rationale. Use when coverage is requested after an audit."
 ---
 
 # ny-coverage
