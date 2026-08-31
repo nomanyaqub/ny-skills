@@ -27,6 +27,12 @@ ny-skills/              → ~/.config/opencode/ny-skills/
 command/                → ~/.config/opencode/command/
   issue.md                OpenCode `/issue <number>` slash command: kick off
                           the pipeline for a GitHub issue.
+skills/                 → ~/.codex/skills/ (Codex-native layout)
+  <name>/SKILL.md         Same 12 skills as `ny-skills/`, laid out as
+                          Codex skill directories. Linked into
+                          `~/.codex/skills/<name>` per worktree so Codex
+                          discovers them (Codex skips file symlinks, so the
+                          directory itself is the symlink).
 ```
 
 Not tracked here: `opencode.jsonc`, `plugins/` — machine-local
