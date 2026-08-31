@@ -1,5 +1,6 @@
 ---
 name: ny-audit
+description: Audit the implemented changes against the plan: missed concerns, incorrect assumptions, edge cases, correctness and consistency with existing code, project conventions, and security. Use when a code audit is requested after implementation.
 ---
 
 # ny-audit

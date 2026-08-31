@@ -1,5 +1,6 @@
 ---
 name: ny-review-docs
+description: Scan the project's documentation against the current implementation and update any inaccuracies found. Use when a docs review is requested.
 ---
 
 # ny-review-docs
